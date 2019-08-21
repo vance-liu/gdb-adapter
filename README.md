@@ -1,7 +1,7 @@
 gdb adapter [![Build Status](https://travis-ci.org/vance-liu/gdb-adapter.svg?branch=master)](https://travis-ci.org/vance-liu/gdb-adapter) [![Coverage Status](https://coveralls.io/repos/github/vance-liu/gdb-adapter/badge.svg?branch=master)](https://coveralls.io/github/vance-liu/gdb-adapter?branch=master) [![Godoc](https://godoc.org/github.com/vance-liu/gdb-adapter?status.svg)](https://godoc.org/github.com/vance-liu/gdb-adapter)
 ====
 
-[gdb](https://github.com/gogf/gf) adapter for [Casbin](https://github.com/casbin/casbin). 
+[GF ORM](https://github.com/gogf/gf) adapter for [Casbin](https://github.com/casbin/casbin). 
 
 Based on [GF ORM](https://github.com/gogf/gf), and tested in:
 - MySQL
