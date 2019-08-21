@@ -143,7 +143,7 @@ func testAutoSave(t *testing.T, a *Adapter) {
 }
 
 func TestAdapters(t *testing.T) {
-	a := initAdapter(t, "mysql", "root:root1234@tcp(127.0.0.1:3306)/casbin")
+	a := initAdapter(t, "mysql", "root:@tcp(127.0.0.1:3306)/casbin")
 	testAutoSave(t, a)
 	testSaveLoad(t, a)
 
@@ -153,7 +153,7 @@ func TestAdapters(t *testing.T) {
 
 	a = initAdapterFormOptions(t, &Adapter{
 		driverName:     "mysql",
-		dataSourceName: "root:root1234@tcp(127.0.0.1:3306)/casbin",
+		dataSourceName: "root:@tcp(127.0.0.1:3306)/casbin",
 	})
 	testAutoSave(t, a)
 	testSaveLoad(t, a)
