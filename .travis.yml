@@ -8,6 +8,10 @@ go:
 before_install:
   - go get github.com/mattn/goveralls
 
+before_script:
+  - mysql -e 'CREATE DATABASE casbin;'
+  - psql -c 'CREATE DATABASE casbin;' -U postgres
+
 script:
   - $HOME/gopath/bin/goveralls -service=travis-ci
 
