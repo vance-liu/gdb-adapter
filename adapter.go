@@ -36,25 +36,25 @@ type CasbinRule struct {
 
 // Adapter represents the gdb adapter for policy storage.
 type Adapter struct {
-	driverName     string
-	dataSourceName string
-	tableName      string
-	db             gdb.DB
+	DriverName     string
+	DataSourceName string
+	TableName      string
+	Db             gdb.DB
 }
 
 // finalizer is the destructor for Adapter.
 func finalizer(a *Adapter) {
 	// 注意不用的时候不需要使用Close方法关闭数据库连接(并且gdb也没有提供Close方法)，
 	// 数据库引擎底层采用了链接池设计，当链接不再使用时会自动关闭
-	a.db = nil
+	a.Db = nil
 }
 
 // NewAdapter is the constructor for Adapter.
 func NewAdapter(driverName string, dataSourceName string) (*Adapter, error) {
 	a := &Adapter{}
-	a.driverName = driverName
-	a.dataSourceName = dataSourceName
-	a.tableName = "casbin_rule"
+	a.DriverName = driverName
+	a.DataSourceName = dataSourceName
+	a.TableName = "casbin_rule"
 
 	// Open the DB, create it if not existed.
 	err := a.open()
@@ -71,10 +71,10 @@ func NewAdapter(driverName string, dataSourceName string) (*Adapter, error) {
 // NewAdapterFromOptions is the constructor for Adapter with existed connection
 func NewAdapterFromOptions(adapter *Adapter) (*Adapter, error) {
 
-	if adapter.tableName == "" {
-		adapter.tableName = "casbin_rule"
+	if adapter.TableName == "" {
+		adapter.TableName = "casbin_rule"
 	}
-	if adapter.db == nil {
+	if adapter.Db == nil {
 		err := adapter.open()
 		if err != nil {
 			return nil, err
@@ -92,8 +92,8 @@ func (a *Adapter) open() error {
 	gdb.SetConfig(gdb.Config{
 		"casbin": gdb.ConfigGroup{
 			gdb.ConfigNode{
-				Type:     a.driverName,
-				LinkInfo: a.dataSourceName,
+				Type:     a.DriverName,
+				LinkInfo: a.DataSourceName,
 				Role:     "master",
 				Weight:   100,
 			},
@@ -105,7 +105,7 @@ func (a *Adapter) open() error {
 		return err
 	}
 
-	a.db = db
+	a.Db = db
 
 	return a.createTable()
 }
@@ -113,17 +113,17 @@ func (a *Adapter) open() error {
 func (a *Adapter) close() error {
 	// 注意不用的时候不需要使用Close方法关闭数据库连接(并且gdb也没有提供Close方法)，
 	// 数据库引擎底层采用了链接池设计，当链接不再使用时会自动关闭
-	a.db = nil
+	a.Db = nil
 	return nil
 }
 
 func (a *Adapter) createTable() error {
-	_, err := a.db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (ptype VARCHAR(10), v0 VARCHAR(256), v1 VARCHAR(256), v2 VARCHAR(256), v3 VARCHAR(256), v4 VARCHAR(256), v5 VARCHAR(256))", a.tableName))
+	_, err := a.Db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (ptype VARCHAR(10), v0 VARCHAR(256), v1 VARCHAR(256), v2 VARCHAR(256), v3 VARCHAR(256), v4 VARCHAR(256), v5 VARCHAR(256))", a.TableName))
 	return err
 }
 
 func (a *Adapter) dropTable() error {
-	_, err := a.db.Exec(fmt.Sprintf("DROP TABLE %s", a.tableName))
+	_, err := a.Db.Exec(fmt.Sprintf("DROP TABLE %s", a.TableName))
 	return err
 }
 
@@ -155,7 +155,7 @@ func loadPolicyLine(line CasbinRule, model model.Model) {
 func (a *Adapter) LoadPolicy(model model.Model) error {
 	var lines []CasbinRule
 
-	if err := a.db.Table(a.tableName).Scan(&lines); err != nil {
+	if err := a.Db.Table(a.TableName).Scan(&lines); err != nil {
 		return err
 	}
 
@@ -206,7 +206,7 @@ func (a *Adapter) SavePolicy(model model.Model) error {
 	for ptype, ast := range model["p"] {
 		for _, rule := range ast.Policy {
 			line := savePolicyLine(ptype, rule)
-			_, err := a.db.Table(a.tableName).Data(&line).Insert()
+			_, err := a.Db.Table(a.TableName).Data(&line).Insert()
 			if err != nil {
 				return err
 			}
@@ -216,7 +216,7 @@ func (a *Adapter) SavePolicy(model model.Model) error {
 	for ptype, ast := range model["g"] {
 		for _, rule := range ast.Policy {
 			line := savePolicyLine(ptype, rule)
-			_, err := a.db.Table(a.tableName).Data(&line).Insert()
+			_, err := a.Db.Table(a.TableName).Data(&line).Insert()
 			if err != nil {
 				return err
 			}
@@ -229,7 +229,7 @@ func (a *Adapter) SavePolicy(model model.Model) error {
 // AddPolicy adds a policy rule to the storage.
 func (a *Adapter) AddPolicy(sec string, ptype string, rule []string) error {
 	line := savePolicyLine(ptype, rule)
-	_, err := a.db.Table(a.tableName).Data(&line).Insert()
+	_, err := a.Db.Table(a.TableName).Data(&line).Insert()
 	return err
 }
 
@@ -268,7 +268,7 @@ func (a *Adapter) RemoveFilteredPolicy(sec string, ptype string, fieldIndex int,
 }
 
 func rawDelete(a *Adapter, line CasbinRule) error {
-	db := a.db.Table(a.tableName)
+	db := a.Db.Table(a.TableName)
 
 	db.Where("ptype = ?", line.PType)
 	if line.V0 != "" {

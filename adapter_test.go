@@ -152,15 +152,15 @@ func TestAdapters(t *testing.T) {
 	testSaveLoad(t, a)
 
 	a = initAdapterFormOptions(t, &Adapter{
-		driverName:     "mysql",
-		dataSourceName: "root:@tcp(127.0.0.1:3306)/casbin",
+		DriverName:     "mysql",
+		DataSourceName: "root:@tcp(127.0.0.1:3306)/casbin",
 	})
 	testAutoSave(t, a)
 	testSaveLoad(t, a)
 
 	a = initAdapterFormOptions(t, &Adapter{
-		driverName:     "pgsql",
-		dataSourceName: "user=postgres host=127.0.0.1 port=5432 sslmode=disable dbname=casbin",
+		DriverName:     "pgsql",
+		DataSourceName: "user=postgres host=127.0.0.1 port=5432 sslmode=disable dbname=casbin",
 	})
 	testAutoSave(t, a)
 	testSaveLoad(t, a)

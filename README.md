@@ -15,11 +15,11 @@ Based on [GF ORM](https://github.com/gogf/gf), and tested in:
 
 ```go
 opts := &Adapter{
-    driverName: "mysql",
-    dataSourceName: "root:1234@tcp(127.0.0.1:3306)/casbin",
-    tableName: "casbin_rule",
+    DriverName: "mysql",
+    DataSourceName: "root:1234@tcp(127.0.0.1:3306)/casbin",
+    TableName: "casbin_rule",
     // or reuse an existing connection:
-    // db: yourDBConn,
+    // Db: yourDBConn,
 }
 
 a := NewAdapterFromOptions(opts)
