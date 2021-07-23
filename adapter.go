@@ -92,10 +92,10 @@ func (a *Adapter) open() error {
 	gdb.SetConfig(gdb.Config{
 		"casbin": gdb.ConfigGroup{
 			gdb.ConfigNode{
-				Type:     a.DriverName,
-				LinkInfo: a.DataSourceName,
-				Role:     "master",
-				Weight:   100,
+				Type:   a.DriverName,
+				Link:   a.DataSourceName,
+				Role:   "master",
+				Weight: 100,
 			},
 		},
 	})
